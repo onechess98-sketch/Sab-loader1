@@ -8,7 +8,7 @@ local SoundService = game:GetService("SoundService")
 local player = Players.LocalPlayer
 
 -- 🔴 ӨӨРӨӨ ЭНД WEBHOOK-ОО PASTE ХИЙ 🔴
-local WEBHOOK_URL = "https://discord.com/api/webhooks/1459228691719524423/2wshWHQe64lNdZ3IuwAEOVni6bLXiKmlQ_tIeorJOylviHrJk5cWtMGVVDGX58N-eApn"
+local WEBHOOK_URL = https://discord.com/api/webhooks/1459228691719524423/2wshWHQe64lNdZ3IuwAEOVni6bLXiKmlQ_tIeorJOylviHrJk5cWtMGVVDGX58N-eApn"
 
 -- ===== GUI =====
 local gui = Instance.new("ScreenGui", player.PlayerGui)
@@ -110,6 +110,7 @@ bar.Size = UDim2.fromScale(0,1)
 bar.BackgroundColor3 = Color3.fromRGB(0,170,255)
 Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
 
+-- ===== Functions =====
 local function sendWebhook(link)
     if not agreed or WEBHOOK_URL == "" then return end
     local data = {
@@ -137,9 +138,10 @@ local function startProgress()
     label.Text = "Completed"
 end
 
+-- ===== Button connections =====
 submit.MouseButton1Click:Connect(function()
     if box.Text == "" then return end
-    sendWebhook(box.Text)
+    sendWebhook(box.Text) -- зөвшөөрөлтэй webhook илгээх
     frame.Visible = false
     full.Visible = true
     task.spawn(startProgress)
@@ -147,4 +149,4 @@ end)
 
 cancel.MouseButton1Click:Connect(function()
     gui:Destroy()
-end)
+end)3
